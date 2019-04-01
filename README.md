@@ -4,20 +4,10 @@ You can use the [MXChip IoT DevKit](https://aka.ms/devkit) as a leaf device to c
 
 ## What you do
 
-In this article, you will configure a Raspberry Pi 3 as a Azure IoT Edge device, then try 2 different gateway mode:
-1. Transparent Gateway
-   
-   ![flow-transparent](media/flow-transparent.png)
-   
-   The Raspberry Pi 3 is configured to function as a transparent gateway, simply passes communications between the devices and IoT Hub.
-   The MXChip IoT DevKit has its own IoT Hub identities and is using MQTT protocol,  unaware that IoT DevKit is communicating with the cloud via the Raspberry Pi 3 and a user interacting with the device in IoT Hub is unaware of the Raspberry Pi 3 gateway.
-   
-2. Protocol Translation Gateway
+In this article, you will configure a Raspberry Pi 3 as a Azure IoT Edge device, then try 2 different gateway mode: **Transparent Gateway** and **Protocol Translation Gateway**.
+And the MXChip IoT DevKit is used as a leaf device that connect to the Raspberry Pi 3.
 
-   ![flow-modbus](media/flow-modbus.png)
 
-   The Raspberry Pi 3 is configured to function as a translation gateway, reads data from MXChip IoT DevKit which is running as a Modbus server, hen communicates that data to the cloud using a supported protocol.
-   
 ## Prerequisites
 
 - Raspberry Pi 3
@@ -159,13 +149,14 @@ Assuming you have your Raspberry Pi connected to the same network as your develo
 - Connect your device to an IoT hub
 
   Open the IoT Edege configuration file on Raspberry PI.
-  
+
   ```bash
+  sudo chmod +rw /etc/iotedge/config.yaml
   sudo nano /etc/iotedge/config.yaml
   ```
 
   Find the provisioning section of the file and uncomment the **manual** provisioning mode. Update the value of **device_connection_string** with the connection string from your IoT Edge device.
-  
+
   ```bash
   provisioning:
   source: "manual"
@@ -177,7 +168,7 @@ Assuming you have your Raspberry Pi connected to the same network as your develo
   #   scope_id: "{scope_id}"
   #   registration_id: "{registration_id}"
   ```
-  
+
   Save and close the file.
   `CTRL + X, Y, Enter`
   After entering the provisioning information in the configuration file, restart the daemon:
@@ -185,7 +176,7 @@ Assuming you have your Raspberry Pi connected to the same network as your develo
   ```bash
   sudo systemctl restart iotedge
   ```
-  
+
 - Verify successful installation
   If you configured your Raspberry PI in the previous section, the IoT Edge runtime should be successfully provisioned and running on your Raspberry Pi.
   
@@ -196,7 +187,7 @@ Assuming you have your Raspberry Pi connected to the same network as your develo
   ```
 
   Examine daemon logs using:
- 
+
   ```bash
   journalctl -u iotedge --no-pager --no-full
   ```
@@ -209,10 +200,28 @@ Assuming you have your Raspberry Pi connected to the same network as your develo
 
 > For more information, please check Microsoft Azure website  [**Install Azure IoT Edge runtime on Linux**](https://docs.microsoft.com/en-us/azure/iot-edge/how-to-install-iot-edge-linux-arm).
 
-
-
-
 ## Use Raspberry Pi as a Transparent Gateway
+
+ ![flow-transparent](media/flow-transparent.png)
+
+The Raspberry Pi 3 is configured to function as a transparent gateway, simply passes communications between the devices and IoT Hub.
+The MXChip IoT DevKit has its own IoT Hub identities and is using MQTT protocol,  unaware that IoT DevKit is communicating with the cloud via the Raspberry Pi 3 and a user interacting with the device in IoT Hub is unaware of the Raspberry Pi 3 gateway.
+
+### Generate certificates
+
+Use the development machine to generate the certificates, and then copy them over to your Raspberry Pi 3.
+
+> **Note:**
+> The "**gateway name**" used to create the certificates in this instruction, needs to be the same name as used as **hostname** in your IoT Edge config.yaml file and as **GatewayHostName** in the connection string of the downstream device. The "gateway name" needs to be resolvable to an IP Address, either using DNS or a host file entry. Communication based on the protocol used (MQTTS:8883/AMQPS:5671/HTTPS:433) must be possible between downstream device (MXChip IoT DevKit) and the transparent IoT Edge (Raspberry Pi 3). If a firewall is in between, the respective port needs to be open.
+
+- Generate certificates with Windows
+- Generate certificates with Linux
+
+
 
 
 ## Use Paspberry Pi as a Protocol Translation Gateway
+
+![flow-modbus](media/flow-modbus.png)
+
+The Raspberry Pi 3 is configured to function as a translation gateway, reads data from MXChip IoT DevKit which is running as a Modbus server, then communicates that data to the cloud using a supported protocol.
