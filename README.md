@@ -117,18 +117,18 @@ Assuming you have your Raspberry Pi connected to the same network as your develo
 
   Make sure Moby and CLI are installed properly:
   `sudo docker version`
-
-  ![pi-install-docker](media/pi-install-docker.png)
-
-- Install the IoT Edge Security Daemon
   
+  ![pi-install-docker](media/pi-install-docker.png)
+  
+- Install the IoT Edge Security Daemon
+
   ```bash
   # Download and install the standard libiothsm implementation
   curl -L https://aka.ms/libiothsm-std-linux-armhf-latest -o libiothsm-std.deb && sudo dpkg -i ./libiothsm-std.deb
-
+  
   # Download and install the IoT Edge Security Daemon
   curl -L https://aka.ms/iotedged-linux-armhf-latest -o iotedge.deb && sudo dpkg -i ./iotedge.deb
-
+  
   # Run apt-get fix
   sudo apt-get install -f
   ```
