@@ -58,19 +58,20 @@ Take following steps to install Raspbian:
 
 Your Raspberry Pi doesn’t have a power switch: as soon as you connect it to a power outlet, it will turn on.
 
+![pi-labelled](media/pi-labelled.png)
+
   - Insert the micro SD card you've setup into the micros SD card slot at the underside of your Pi.
   - Connect the keyboard to a USB port on the Raspberry Pi. 
   - Use a cable to connect the screen to the Pi's HDMI port.
   - Use an Ethernet cable to connect the Ethernet port on the Raspberry Pi if you want to connect the Pi to the internet via Ethernet (You don’t need to do this if you’ll be using WiFi).
   - Plug a micro USB power supply into a socket and connect it to you Pi's power port.
 
-    ![pi-labelled](media/pi-labelled.png)
 
-    Then you should see a red LED light up on the Raspberry Pi, which indicates that the Pi is connected to power. As it starts up (this is also called **booting**), you will see raspberries appear in the top left-hand of your screen.
+Now you should see a red LED light up on the Raspberry Pi, which indicates that the Pi is connected to power. As it starts up (this is also called **booting**), you will see raspberries appear in the top left-hand of your screen.
 
-    ![raspberries log](media/raspberries.png)
+![raspberries log](media/raspberries.png)
 
-### Finish the setup
+### Configue your  Raspberry Pi
 
 When you start your Raspberry Pi for the first time, the default user is `pi` and the password is `raspberry`.
 Once login, run the `sudo raspi-config` to finish the initial setup:
