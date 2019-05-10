@@ -103,20 +103,20 @@ Please create a [Azure IoT Hub](https://docs.microsoft.com/en-us/azure/iot-hub/i
 
   - Select **IoT Edge** from the menu.
 
-    ![Portal - IoT Edge](media\create-iotedge-device-1.png)
+    ![Portal - IoT Edge](media/create-iotedge-device-1.png)
 
   - Select **Add an IoT Edge device**.
 
-    ![Portal - Add IoT Edge](media\create-iotedge-device-2.png)
+    ![Portal - Add IoT Edge](media/create-iotedge-device-2.png)
 
   - Provide a descriptive device ID. Use the default settings for auto-generating authentication keys and connecting the new device to your hub. Then click **Save** to finish the registration.
 
-    ![Portal - Create IoT Edge](media\create-iotedge-device-3.png)
+    ![Portal - Create IoT Edge](media/create-iotedge-device-3.png)
 
 - Copy device connection string
   Click the IoT Edge device you created, copy the value of either **Connection string (primary key)** or **Connection string (secondary key)**.
 
-  ![Portal - Copy IoT Edge connection string](media\copy-iotedge-device-str.png)
+  ![Portal - Copy IoT Edge connection string](media/copy-iotedge-device-str.png)
 
   > For more information, please check Microsoft Azure website  [**Register a new Azure IoT Edge device from the Azure portal**](https://docs.microsoft.com/en-us/azure/iot-edge/how-to-register-device-portal) .
   > 
