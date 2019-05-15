@@ -16,13 +16,16 @@ And the MXChip IoT DevKit is used as a leaf device that connect to the IoT Edge 
   - A micro SD card reader.
   - A keyboard.
   - A screen and a cable.
+
 - MXChip IoT DevKit
   - Finish the [Getting Started Guide](https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-arduino-iot-devkit-az3166-get-started) .
   - Have your IoT DevKit connected to Wi-Fi.
   Don't have a **MXChip IoT DevKit** yet? [Purchase one](https://aka.ms/iot-devkit-purchase).
+
 - Prepare the development environment
   - Install [Visual Studio Code](https://code.visualstudio.com/).
   - Install [Azure IoT Tools extension pack](https://aka.ms/azure-iot-tools).
+
 - An active Azure subscription
 
   If you do not have one, you can register via one of these two methods:
@@ -32,8 +35,13 @@ And the MXChip IoT DevKit is used as a leaf device that connect to the IoT Edge 
 
 - Network
 
-  First make sure the Raspberry Pi and your working machine can access Internet and Azure.
-Then all devices includes Raspberry Pi, MXChip IoT DevKit and your working machine are connecting to the same AP / router and under in the same subnetwork,  this will make the whole experiment much smooth.
+  There are 3 devices in this example:
+
+  - One Raspberry Pi as a Azure IoT Edge device.
+  - One MXChip IoT DevKit as a leaf device.
+  - One laptop / desktop as you working machine.
+
+  First please make sure the Raspberry Pi and your working machine can access Internet and Azure, then all these 3 devices are connecting to the same AP / router and under in the same subnetwork,  this will make the whole experiment much smooth.
 
 ## Setting up your Raspberry Pi
 
@@ -210,6 +218,12 @@ To config your Raspberry Pi as an Azure IoT Edge device, the first step is insta
   sudo iotedge list
   ```
 
+  And, check the version:
+  
+  ```bash
+  iotedge version
+  ```
+
 > For more information, please check Microsoft Azure website  [**Install Azure IoT Edge runtime on Linux**](https://docs.microsoft.com/en-us/azure/iot-edge/how-to-install-iot-edge-linux-arm). 
 
 Until now you have configured your Raspberry Pi as an Azure IoT Edge device  
@@ -320,49 +334,18 @@ Now that you've made a certificate chain on Raspberry Pi, you need to configure 
 
 ### Verify successful installation
 
-Use the steps in this section to verify if everything has be set up correctly on Raspberry Pi.
+Use the `check` command to verify whether the everything has be set up correctly on Raspberry Pi.
 
-1. Copy the owner CA file from Raspberry Pi to your working machine. The [WinSCP](https://winscp.net/eng/index.php) can make this much easier.
+```bash
+sudo iotedge check
+```
 
-2. Install OpenSSL if your working machine is Windows.
+![iotedge check result](media/iotedge-check.png) 
 
-   > **Note:**
-   > If you already have OpenSSL installed on your Windows device, you may skip this step but ensure that openssl.exe is available in your PATH environment variable.
+This command will check the configurations, connection and production readiness, you can get more information from this [article](https://docs.microsoft.com/en-us/azure/iot-edge/troubleshoot). 
 
-   Here recommend to install the OpenSSL via [vcpkg](https://github.com/Microsoft/vcpkg) :
-
-     - Navigate to a directory where you want to install vcpkg. We'll refer to this directory as *<VCPKGDIR>*. Follow the instructions to download and install [vcpkg](https://github.com/Microsoft/vcpkg).
-
-     - Once vcpkg is installed, from a powershell prompt, run the following command to install the OpenSSL package for Windows x64. The installation typically takes about 5 mins to complete.
-
-      ```powershell
-      .\vcpkg install openssl:x64-windows
-      ```
-
-     - Add `<VCPKGDIR>\installed\x64-windows\tools\openssl` to your PATH environment variable so that the openssl.exe file is available for invocation.
-
-3. Verify by running below command:
-
-   ```cmd/sh
-   openssl s_client -connect <IP Address of the Raspberry Pi>:8883 -CAfile <CERTDIR on working machine>/azure-iot-test-only.root.ca.cert.pem -showcerts
-   ```
-
-   You should see a message saying "Verify return code: 0 (ok)" and dump out all certs in the console window:
-
-   ![Cert Verify OK](media/cert-verify-ok.png)
-
-   > **Note:**
-   > Not every time the `openssl` will return success, like this: 
-   >
-   > ![Cert Verify failed](media/cert-verify-failed.png) 
-   >
-   > Please re-run. 
-   >
-   > Try following steps for resolution if still not work:
-   >
-   > 1. Check the status of the IoT Edge Daemon using, make sure it's running properly: `systemctl status iotedge` .
-   > 2. If use FQDN please make sure the gateway name resolvable to an IP Address.
-   > 3. Are communication ports open in your firewall? Communication based on the protocol used (MQTTS:8883/AMQPS:5671/HTTPS:433) must be possible between the Raspberry Pi and your working machine.
+>  ** NOTE:**
+>  The `check` command is available in [release 1.0.7](https://github.com/Azure/azure-iotedge/releases/tag/1.0.7) and later.
 
 ## Connect the MXChip IoT DevKit  with Raspberry Pi 3
 
@@ -512,6 +495,14 @@ The sample application is running successfully when you see the following result
 
 ![Output in VS Code](media/iot-devkit-get-started/serial-monitor-result.png)
 
+### Monitor IoT Edge daemon logs
+
+Run `sudo journalctl -u iotedge -f` on Raspberry Pi to examine daemon logs.
+
+It prints out one log for each telemetry data send from the MXChip IoT DevKit:
+
+![IoT Edge Log](media/iotedge-log.png) 
+
 ### Monitor telemetry data via Azure IoT Hub Toolkit
 
 You can use [Azure IoT Hub Toolkit](https://marketplace.visualstudio.com/items?itemName=vsciot-vscode.azure-iot-toolkit) to monitor device-to-cloud (D2C) messages in IoT Hub:
@@ -534,13 +525,13 @@ Shutdown the Raspberry Pi, then the Azure LED on the MXChip IoT DevKit will be o
 
 ### Troubleshoot the gateway connection
 
-If your leaf device has intermittent connection to its gateway device, try the following steps for resolution.
+If your leaf device has intermittent connection to its gateway device, please follow [Common issues and resolutions for Azure IoT Edge](https://docs.microsoft.com/en-us/azure/iot-edge/troubleshoot#resolution-7) for troubleshooting and resolution, and here are hints special for transparent gateway:
 
 1. Is the gateway name appended to the connection string the same as the hostname in the IoT Edge config.yaml file on the gateway device?
 
 2. Is the gateway name resolvable to an IP Address? You can resolve intermittent connections either by using DNS or by adding a host file entry on the leaf device.
 
-   > **Note:**
+   > **NOTE:**
    > Recommend to directly use the **IP Address** of the Raspberry Pi 3 as the "**gateway name**" to avoid potential DNS resolving problem.
 
 3. Are communication ports open in your firewall? Communication based on the protocol used (MQTTS:8883/AMQPS:5671/HTTPS:433) must be possible between downstream device and the transparent IoT Edge.
